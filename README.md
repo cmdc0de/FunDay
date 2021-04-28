@@ -1,6 +1,19 @@
 # FunDay
 Good Times with ESP 32 and FPGA
 
+# Materials
+* [DHT11 Temperature Humidity Sensor Module Digital](https://www.amazon.com/gp/product/B01DKC2GQ0/ref=ppx_yo_dt_b_asin_title_o02_s00?ie=UTF8&psc=1)
+* [OLED Display Module SSD1306 Driver IIC I2C](https://www.amazon.com/gp/product/B08RYSVG5Y/ref=ppx_yo_dt_b_asin_title_o02_s00?ie=UTF8&psc=1)
+* [ESP32-DevKitC](https://www.amazon.com/gp/product/B0811LGWY2/ref=ppx_yo_dt_b_asin_title_o02_s00?ie=UTF8&psc=1)
+* [Breadboard Jumper Wires](https://www.amazon.com/EDGELEC-Breadboard-Optional-Assorted-Multicolored/dp/B07GD2BWPY/ref=pd_bxgy_2/139-4347215-7394026?_encoding=UTF8&pd_rd_i=B07GD2BWPY&pd_rd_r=229bcb14-5541-40f1-97ee-828203e33857&pd_rd_w=IfRZB&pd_rd_wg=i4Cxa&pf_rd_p=fd3ebcd0-c1a2-44cf-aba2-bbf4810b3732&pf_rd_r=BWMP5SNBZKHE2AXACH2H&psc=1&refRID=BWMP5SNBZKHE2AXACH2H)
+* [Solderless Board](https://www.amazon.com/DEYUE-breadboard-Set-Prototype-Board/dp/B07LFD4LT6/ref=pd_bxgy_3/139-4347215-7394026?_encoding=UTF8&pd_rd_i=B07LFD4LT6&pd_rd_r=229bcb14-5541-40f1-97ee-828203e33857&pd_rd_w=IfRZB&pd_rd_wg=i4Cxa&pf_rd_p=fd3ebcd0-c1a2-44cf-aba2-bbf4810b3732&pf_rd_r=BWMP5SNBZKHE2AXACH2H&psc=1&refRID=BWMP5SNBZKHE2AXACH2H)
+* [EspoTek Labrador](https://www.amazon.com/gp/product/B07CVB7ZJG/ref=ppx_yo_dt_b_asin_title_o02_s01?ie=UTF8&psc=1)
+  * https://github.com/espotek/labrador/wiki
+* [Resistors varying values](https://www.amazon.com/gp/product/B016NXK6QK/ref=ppx_yo_dt_b_asin_title_o02_s01?ie=UTF8&psc=1)
+* [APA106 Super LED](https://www.espruino.com/WS2811)
+* [TinyFPGA BX](https://www.arrow.com/en/products/bx/tinyfpga?gclid=CjwKCAjwj6SEBhAOEiwAvFRuKC7xSG16d-C2hRvBXGUWFlLOY-2m2u4k8rmGTDVco7wUXTf_i3W6mBoCGjwQAvD_BwE)
+  * [User Guide](https://tinyfpga.com/bx/guide.html)
+
 
 # Project 0:
 * ESP32 blink simple LED
