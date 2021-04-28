@@ -18,6 +18,7 @@ Good Times with ESP 32 and FPGA
 * [TinyFPGA BX](https://www.arrow.com/en/products/bx/tinyfpga?gclid=CjwKCAjwj6SEBhAOEiwAvFRuKC7xSG16d-C2hRvBXGUWFlLOY-2m2u4k8rmGTDVco7wUXTf_i3W6mBoCGjwQAvD_BwE)
   * [User Guide](https://tinyfpga.com/bx/guide.html)
 * [240x320 3.3V 2.4" SPI TFT LCD Touch](https://www.ebay.com/itm/171983887298?hash=item280b09dbc2:g:a-UAAOSwKz5dqAec)
+  * [Datasheet](https://github.com/cmdc0de/FunDay/blob/main/docs/ILI9341%20Datasheet.pdf)
 
 
 # Project 0:
