@@ -14,7 +14,7 @@ Good Times with ESP 32 and FPGA
   * https://github.com/espotek/labrador/wiki
 * [Resistors varying values](https://www.amazon.com/gp/product/B016NXK6QK/ref=ppx_yo_dt_b_asin_title_o02_s01?ie=UTF8&psc=1)
 * [APA106 Super LED](https://www.espruino.com/WS2811)
- * [Datasheet](https://github.com/cmdc0de/FunDay/blob/main/docs/APA106.pdf)
+  * [Datasheet](https://github.com/cmdc0de/FunDay/blob/main/docs/APA106.pdf)
 * [TinyFPGA BX](https://www.arrow.com/en/products/bx/tinyfpga?gclid=CjwKCAjwj6SEBhAOEiwAvFRuKC7xSG16d-C2hRvBXGUWFlLOY-2m2u4k8rmGTDVco7wUXTf_i3W6mBoCGjwQAvD_BwE)
   * [User Guide](https://tinyfpga.com/bx/guide.html)
 * [240x320 3.3V 2.4" SPI TFT LCD Touch](https://www.ebay.com/itm/171983887298?hash=item280b09dbc2:g:a-UAAOSwKz5dqAec)
