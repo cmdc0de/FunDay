@@ -1,32 +1,10 @@
-/* Scan Example
-
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
-
-/*
-    This example shows how to use the All Channel Scan or Fast Scan to connect
-    to a Wi-Fi network.
-
-    In the Fast Scan mode, the scan will stop as soon as the first network matching
-    the SSID is found. In this mode, an application can set threshold for the
-    authentication mode and the Signal strength. Networks that do not meet the
-    threshold requirements will be ignored.
-
-    In the All Channel Scan mode, the scan will end only after all the channels
-    are scanned, and connection will start with the best network. The networks
-    can be sorted based on Authentication Mode or Signal Strength. The priority
-    for the Authentication mode is:  WPA2 > WPA > WEP > Open
-*/
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "esp_wifi.h"
 #include "esp_log.h"
 #include "esp_event.h"
 #include "nvs_flash.h"
+#include <cstring>
 
 /* Set the SSID and Password via project configuration, or can set directly here */
 #define DEFAULT_SSID CONFIG_EXAMPLE_WIFI_SSID
@@ -68,6 +46,10 @@
 
 static const char *TAG = "scan";
 
+extern "C" {
+	void app_main(void);
+}
+
 static void event_handler(void* arg, esp_event_base_t event_base,
                                 int32_t event_id, void* event_data)
 {
@@ -99,16 +81,16 @@ static void fast_scan(void)
     assert(sta_netif);
 
     // Initialize and start WiFi
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid = DEFAULT_SSID,
-            .password = DEFAULT_PWD,
-            .scan_method = DEFAULT_SCAN_METHOD,
-            .sort_method = DEFAULT_SORT_METHOD,
-            .threshold.rssi = DEFAULT_RSSI,
-            .threshold.authmode = DEFAULT_AUTHMODE,
-        },
-    };
+    wifi_config_t wifi_config;
+    memset(&wifi_config,0,sizeof(wifi_config));
+
+    strcpy((char*)wifi_config.sta.ssid,(const char *)"espsid");
+    strcpy((char*)wifi_config.sta.password,(const char *)"password");
+    wifi_config.sta.scan_method 	= DEFAULT_SCAN_METHOD;
+    wifi_config.sta.sort_method 	= DEFAULT_SORT_METHOD;
+    wifi_config.sta.threshold.rssi 	= DEFAULT_RSSI;
+    wifi_config.sta.threshold.authmode 	= DEFAULT_AUTHMODE;
+    
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());

@@ -1,2 +1,2 @@
-idf_component_register(SRCS "fast_scan.c"
+idf_component_register(SRCS "proj0.cpp"
                     INCLUDE_DIRS ".")
