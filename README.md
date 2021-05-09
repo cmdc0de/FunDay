@@ -19,7 +19,10 @@ Good Times with ESP 32 and FPGA
   * [User Guide](https://tinyfpga.com/bx/guide.html)
 * [240x320 3.3V 2.4" SPI TFT LCD Touch](https://www.ebay.com/itm/171983887298?hash=item280b09dbc2:g:a-UAAOSwKz5dqAec)
   * [Datasheet](https://github.com/cmdc0de/FunDay/blob/main/docs/ILI9341%20Datasheet.pdf)
-
+* 3x USB Micro B
+  * 1 for the ESP32 DevKitC
+  * 1 for EspoTek Labrador
+  * 1 for Tiny FPGA Bx
 
 # Project 0:
 * ESP32 blink simple LED
