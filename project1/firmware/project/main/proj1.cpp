@@ -6,8 +6,11 @@
 #include "nvs_flash.h"
 #include <cstring>
 #include "driver/gpio.h"
+#include <system.h>
+#include <net/esp32inet.h>
 
-static const char *TAG = "scan";
+static const char *TAG = "proj1";
+using namespace libesp;
 
 extern "C" {
 	void app_main(void);
@@ -31,25 +34,30 @@ static void configure_led(void)
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 }
 
-void app_main(void)
-{
+void app_main(void) {
     // Initialize NVS
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK( ret );
+	esp_err_t ret = nvs_flash_init();
+	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+		ESP_ERROR_CHECK(nvs_flash_erase());
+		ret = nvs_flash_init();
+	}
+	ESP_ERROR_CHECK( ret );
 
-    configure_led();
+	System::get().logSystemInfo();
+	ErrorType et;
+	if(!(et=ESP32INet::get()->init()).ok()) {
+		ESP_LOGE(TAG,"failed to init network %s", et.toString());
+	} else {
+		ESP32INet::dumpToLog();
+	}
 
-    while (1) {
-        ESP_LOGI(TAG, "Turning the LED %s!", s_led_state == true ? "ON" : "OFF");
-        blink_led();
-        /* Toggle the LED state */
-        s_led_state = !s_led_state;
-        vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
-    }
+	configure_led();
 
-
+	while (1) {
+		ESP_LOGI(TAG, "Turning the LED %s!", s_led_state == true ? "ON" : "OFF");
+		blink_led();
+		/* Toggle the LED state */
+		s_led_state = !s_led_state;
+		vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
+	}
 }
