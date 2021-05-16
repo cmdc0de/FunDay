@@ -10,6 +10,7 @@
 #include <net/esp32inet.h>
 #include <i2c.hpp>
 #include <device/display/ssd1306.h>
+#include <device/sensor/dht11.h>
 
 static const char *TAG = "proj1";
 using namespace libesp;
@@ -69,6 +70,13 @@ void app_main(void) {
 	Display.puts("Hello World!", &Font_11x18, SSD1306::COLOR_WHITE);
 	Display.updateScreen();
 	vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
+	Display.fill(SSD1306::COLOR_BLACK);
+	Display.updateScreen();
+	//
+	DHT11_init(GPIO_NUM_18);
+	printf("Temperature is %d \n", DHT11_read().temperature);
+   printf("Humidity is %d\n", DHT11_read().humidity);
+   printf("Status code is %d\n", DHT11_read().status);
 
 	while (1) {
 		ESP_LOGI(TAG, "Turning the LED %s!", s_led_state == true ? "ON" : "OFF");
@@ -76,5 +84,14 @@ void app_main(void) {
 		/* Toggle the LED state */
 		s_led_state = !s_led_state;
 		vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
+		Display.fill(SSD1306::COLOR_BLACK);
+		char buf[24] = {'\0'};
+		sprintf(&buf[0],"T: %d", DHT11_read().temperature);
+		Display.gotoXY(10,20);
+		Display.puts(&buf[0], &Font_11x18, SSD1306::COLOR_WHITE);
+		sprintf(&buf[0],"H: %d", DHT11_read().humidity);
+		Display.gotoXY(10,40);
+		Display.puts(&buf[0], &Font_11x18, SSD1306::COLOR_WHITE);
+		Display.updateScreen();
 	}
 }
