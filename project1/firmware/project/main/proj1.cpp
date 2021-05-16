@@ -8,6 +8,8 @@
 #include "driver/gpio.h"
 #include <system.h>
 #include <net/esp32inet.h>
+#include <i2c.hpp>
+#include <device/display/ssd1306.h>
 
 static const char *TAG = "proj1";
 using namespace libesp;
@@ -34,6 +36,7 @@ static void configure_led(void)
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 }
 
+
 void app_main(void) {
     // Initialize NVS
 	esp_err_t ret = nvs_flash_init();
@@ -52,6 +55,20 @@ void app_main(void) {
 	}
 
 	configure_led();
+	ESP32_I2CMaster I2CMaster(GPIO_NUM_22, GPIO_NUM_21, 400000, I2C_NUM_0,0,1024);
+	SSD1306 Display;
+	Display.init(&I2CMaster,true);
+	I2CMaster.scan();
+	Display.fill(SSD1306::COLOR_BLACK);
+	//Display.drawLine(0,10,100,10,SSD1306::COLOR_WHITE);
+	Display.drawFilledCircle(64,30,15,SSD1306::COLOR_WHITE);
+	Display.updateScreen();
+	vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
+	Display.fill(SSD1306::COLOR_BLACK);
+	Display.gotoXY(1,23);
+	Display.puts("Hello World!", &Font_11x18, SSD1306::COLOR_WHITE);
+	Display.updateScreen();
+	vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
 
 	while (1) {
 		ESP_LOGI(TAG, "Turning the LED %s!", s_led_state == true ? "ON" : "OFF");

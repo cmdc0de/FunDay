@@ -2,6 +2,9 @@
 
 We will blink the LED but as code for WIFI AP starting and when someone joins
 
+Protocols:
+* https://www.circuitbasics.com/basics-of-the-i2c-communication-protocol/
+
 Materials:
 * LED
 * resistor: https://ohmslawcalculator.com/led-resistor-calculator to calculate resistor we'll need
