@@ -4,3 +4,9 @@
 [submodule "project1/firmware/project/components/esp-etl/etl"]
 	path = project1/firmware/project/components/esp-etl/etl
 	url = https://github.com/cmdc0de/etl.git
+[submodule "project2/firmware/project/components/libesp"]
+	path = project2/firmware/project/components/libesp
+	url = https://github.com/cmdc0de/libesp.git
+[submodule "project2/firmware/project/components/esp-etl/etl"]
+	path = project2/firmware/project/components/esp-etl/etl
+	url = https://github.com/cmdc0de/etl.git
