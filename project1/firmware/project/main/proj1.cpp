@@ -11,6 +11,8 @@
 #include <i2c.hpp>
 #include <device/display/ssd1306.h>
 #include <device/sensor/dht11.h>
+#include <net/wifi.h>
+#include "mywifihandler.h"
 
 static const char *TAG = "proj1";
 using namespace libesp;
@@ -52,7 +54,16 @@ void app_main(void) {
 	if(!(et=ESP32INet::get()->init()).ok()) {
 		ESP_LOGE(TAG,"failed to init network %s", et.toString());
 	} else {
+		ESP32INet::get()->createWifiInterfaceAP();
+		ESP_LOGI(TAG,"wifi interface created ");
+		vTaskDelay(CONFIG_BLINK_PERIOD / portTICK_PERIOD_MS);
 		ESP32INet::dumpToLog();
+	}
+
+	if(ESP_OK==esp_event_loop_create_default()) {
+		ESP_LOGI(TAG,"Default event loop created");
+	} else {
+		ESP_LOGE(TAG,"Failed to create default event loop");
 	}
 
 	configure_led();
@@ -77,6 +88,17 @@ void app_main(void) {
 	printf("Temperature is %d \n", DHT11_read().temperature);
    printf("Humidity is %d\n", DHT11_read().humidity);
    printf("Status code is %d\n", DHT11_read().status);
+
+	MyWiFiEventHandler wifiHandler;
+	WiFi MyWifi;
+	if(MyWifi.init()) {
+		MyWifi.setWifiEventHandler(&wifiHandler);
+		ESP_LOGI(TAG,"starting AP and web server");
+		MyWifi.startAP("funday","");
+		ESP32INet::dumpToLog();
+	} else {
+		ESP_LOGE(TAG,"failed to init wifi");
+	}
 
 	while (1) {
 		ESP_LOGI(TAG, "Turning the LED %s!", s_led_state == true ? "ON" : "OFF");
