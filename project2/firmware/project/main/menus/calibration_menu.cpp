@@ -40,7 +40,7 @@ ErrorType CalibrationMenu::loadCalibrationData() {
 
 bool CalibrationMenu::hasBeenCalibrated() {
 	size_t size = sizeof(CalibrationLocations);
-	return CalibrationData.getBlob("caldata",&CalibrationLocations[0],size)!=ESP_OK;
+	return CalibrationData.getBlob("caldata",&CalibrationLocations[0],size)==ESP_OK;
 }
 
 void CalibrationMenu::calculate() {
@@ -125,19 +125,19 @@ void CalibrationMenu::drawCrossHairs() {
 	case TOP_LEFT:
 		x = 0;
 		y = 0;
-		MyApp::get().getDisplay().drawVerticalLine(0, 0, 5 , RGBColor::RED);
+		MyApp::get().getDisplay().drawVerticalLine(3, 0, 5 , RGBColor::RED);
 		MyApp::get().getDisplay().drawHorizontalLine(0, 0, 5 , RGBColor::RED);
 		break;
 	case TOP_RIGHT:
 		x = MyApp::get().getLastCanvasWidthPixel();
 		y = 0;
-		MyApp::get().getDisplay().drawVerticalLine(x, y, 5 , RGBColor::RED);
+		MyApp::get().getDisplay().drawVerticalLine(x-3, y, 5 , RGBColor::RED);
 		MyApp::get().getDisplay().drawHorizontalLine(x-5, y, 5 , RGBColor::RED);
 		break;
 	case BOTTOM_LEFT:
 		x = 0;
 		y = MyApp::get().getLastCanvasHeightPixel();
-		MyApp::get().getDisplay().drawVerticalLine(x, y-5, 5 , RGBColor::RED);
+		MyApp::get().getDisplay().drawVerticalLine(3, y-5, 5 , RGBColor::RED);
 		MyApp::get().getDisplay().drawHorizontalLine(x, y, 5 , RGBColor::RED);
 		break;
 	case BOTTOM_RIGHT:

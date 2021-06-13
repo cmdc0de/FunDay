@@ -23,8 +23,7 @@
 #include "fatfsvfs.h"
 #include "pinconfig.h"
 #include <device/leds/rgb4pinled.h>
-#include "menus/timer_menu.h"
-#include "menus/running_timer_menu.h"
+#include "menus/number_menu.h"
 
 using libesp::ErrorType;
 using libesp::DisplayILI9341;
@@ -57,6 +56,7 @@ libesp::ScalingBuffer FrameBuf(&Display, MyApp::FRAME_BUFFER_WIDTH, MyApp::FRAME
 static GUI MyGui(&Display);
 static XPT2046 TouchTask(PIN_NUM_TOUCH_IRQ,true);
 static CalibrationMenu MyCalibrationMenu("nvs");
+static const uint32_t CONFIG_BLINK_PERIOD = 1000;
 
 const char *MyErrorMap::toString(int32_t err) {
 	return "TODO";
@@ -89,9 +89,25 @@ XPT2046 &MyApp::getTouch() {
 	return TouchTask;
 }
 
+libesp::ErrorType MyApp::configureLED() {
+	libesp::ErrorType et;
+	ESP_LOGI(LOGTAG, "Example configured to blink GPIO LED!");
+	gpio_reset_pin(BLINK_GPIO);
+	/* Set the GPIO as a push/pull output */
+	et = gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
+	return et;
+}
+
 libesp::ErrorType MyApp::onInit() {
 	ErrorType et;
 	ESP_LOGI(LOGTAG,"OnInit: Free: %u, Min %u", System::get().getFreeHeapSize(),System::get().getMinimumFreeHeapSize());
+
+	et = configureLED();
+
+	if(!et.ok()) {
+		ESP_LOGE(LOGTAG,"failed to led: %s", et.toString());
+		return et;
+	}
 
 	et = MyCalibrationMenu.initNVS();
 	if(!et.ok()) {
@@ -145,10 +161,10 @@ libesp::ErrorType MyApp::onInit() {
 		vTaskDelay(500 / portTICK_RATE_MS);
 		Display.drawRec(0,60,FRAME_BUFFER_WIDTH/2,20, libesp::RGBColor::GREEN);
 		Display.drawString(15,110,"Color Validation.",libesp::RGBColor::RED);
-		Display.drawString(30,120,"UVLight Box",libesp::RGBColor::BLUE, libesp::RGBColor::WHITE,1,false);
+		Display.drawString(30,120,"Happy FUN DAY!!!!!!!!!!!",libesp::RGBColor::BLUE, libesp::RGBColor::WHITE,1,false);
 		Display.swap();
 
-		vTaskDelay(1000 / portTICK_RATE_MS);
+		vTaskDelay(3000 / portTICK_RATE_MS);
 		ESP_LOGI(LOGTAG,"After Display swap:Free: %u, Min %u",System::get().getFreeHeapSize(),System::get().getMinimumFreeHeapSize());
 
 	} else {
@@ -158,7 +174,7 @@ libesp::ErrorType MyApp::onInit() {
 	TouchTask.start();
 	ESP_LOGI(LOGTAG,"After Task starts: Free: %u, Min %u", System::get().getFreeHeapSize(),System::get().getMinimumFreeHeapSize());
 
-	if(MyCalibrationMenu.hasBeenCalibrated()) {
+	if(!MyCalibrationMenu.hasBeenCalibrated()) {
 		setCurrentMenu(getCalibrationMenu());
 	} else {
 		setCurrentMenu(getMenuState());
@@ -223,11 +239,10 @@ ErrorType MyApp::onRun() {
 
 MenuState MyMenuState;
 libesp::DisplayMessageState DMS;
-TimerMenu MyTimerMenu;
-RunningTimer MyRunningTimerMenu;
+NumberMenu MyNumberMenu;
 
-TimerMenu *MyApp::getTimerMenu() {
-	return &MyTimerMenu;
+NumberMenu *MyApp::getNumberMenu() {
+	return &MyNumberMenu;
 }
 	
 MenuState *MyApp::getMenuState() {
@@ -236,10 +251,6 @@ MenuState *MyApp::getMenuState() {
 
 CalibrationMenu *MyApp::getCalibrationMenu() {
 	return &MyCalibrationMenu;
-}
-
-RunningTimer *MyApp::getRunningTimerMenu() {
-	return &MyRunningTimerMenu;
 }
 
 DisplayMessageState *MyApp::getDisplayMessageState(BaseMenu *bm, const char *msg, uint32_t msDisplay) {

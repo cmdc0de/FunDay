@@ -19,12 +19,6 @@ class XPT2046;
 enum ERRORS {
 	APP_OK = libesp::ErrorType::APP_OK
 	, OTA_INIT_FAIL = libesp::ErrorType::APP_BASE + 1
-	, BT_INIT_FAIL
-	, GAME_TASK_INIT_FAIL
-	, EXPLOIT_TASK_INIT_FAIL
-	, WIFI_TASK_INIT_FAIL
-	, BUTTON_INIT_FAIL
-	, TOP_BOARD_INIT_FAIL
 };
 
 class MyErrorMap : public libesp::IErrorDetail {
@@ -35,18 +29,28 @@ public:
 
 class CalibrationMenu;
 class MenuState;
-class TimerMenu;
-class RunningTimer;
+class NumberMenu;
 
 class MyApp : public libesp::App {
 public:
 	struct MyAppMsg {
-		int dummy;
+  public:
+    enum MSG_TYPE {
+      DUMMY = 0,
+      NUMBER_PRESSED = 1
+    };
+    MyAppMsg(const MSG_TYPE &t): Type(t) {}
+    MSG_TYPE Type;
 	};
+  struct NumberPressed : public MyAppMsg {
+  public:
+    NumberPressed(const uint8_t &n) : MyAppMsg(NUMBER_PRESSED), Number(n) {}
+    uint8_t Number;
+  };
 public:
 	static const char *LOGTAG;
 	static const int QUEUE_SIZE = 10;
-	static const int ITEM_SIZE = sizeof(MyAppMsg);
+	static const int ITEM_SIZE = sizeof(MyAppMsg*);
 	static const char *sYES;
 	static const char *sNO;
 	static const uint16_t DISPLAY_HEIGHT		= 240;
@@ -68,16 +72,16 @@ public:
 	libesp::DisplayDevice &getDisplay();
 	libesp::GUI &getGUI();
 	MenuState *getMenuState();
-	TimerMenu *getTimerMenu();
+	NumberMenu *getNumberMenu();
 	CalibrationMenu *getCalibrationMenu();
-	RunningTimer *getRunningTimerMenu();
 	libesp::DisplayMessageState *getDisplayMessageState(libesp::BaseMenu *, const char *msg, uint32_t msDisplay);
 	libesp::XPT2046 &getTouch();
 	uint8_t *getBackBuffer();
 	uint32_t getBackBufferSize();
-
+	
 protected:
 	MyApp();
+	libesp::ErrorType configureLED();
 	virtual libesp::ErrorType onInit();
 	virtual libesp::ErrorType onRun();
 private:
