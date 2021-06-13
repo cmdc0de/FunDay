@@ -25,20 +25,30 @@ Good Times with ESP 32 and FPGA
   * 1 for Tiny FPGA Bx
 
 # Project 0:
-* ESP32 blink simple LED
-* Set up Open Logic Analyzer to watch signal change
+* Install 
+  * [ESP Tooling and SDK](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/)
+  * [EspoTek Labrador](https://github.com/espotek/labrador/releases)
+* Project:
+  * ESP32 blink simple LED
+  * Set up Open Logic Analyzer to watch signal change
 
 # Project 1:
-* Use ESP32 to start an wifi AP and fetch a web page
 * Use ESP32 to OLED - teaches I2c
+* Use ESP32 to start an wifi AP and fetch a web page 
 
 # Project 2:
 * Use ESP32 display on LCD and use touch capabilities to move menus
 * Use touch screen to change color on super LED (APA106) or an RGB LED.
 
 # Project 3:
-* Blink LED with FPGA
-* Build a clock divider module and blink 2 or 3 different LEDs at different rates
+* Install IVerilog - 
+  * MAC: brew install icarus-verilog
+  * [Windows:](https://bleyer.org/icarus/)
+  * Linux: sudo apt install iverilog
+* Install [Atom + apio](https://tinyfpga.com/bx/guide.html)
+* Project
+  * Blink LED with FPGA
+  * Build a clock divider module and blink 2 or 3 different LEDs at different rates
 
 # Project 4:
 * esp 32 connected to FPGA, touch a number on the ESP32/LCD Touch screen output a 4 bit number on 4 pins. those 4 pins are connected to FPGA and displays the number on a 7 segment display
