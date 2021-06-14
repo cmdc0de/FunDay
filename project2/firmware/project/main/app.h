@@ -4,10 +4,11 @@
  * Author: cmdc0de
  */
 
-#ifndef LIGHTBOX_APP_H
-#define LIGHTBOX_APP_H
+#ifndef PROJ_APP_H
+#define PROJ_APP_H
 
 #include <app/app.h>
+#include <freertos.h>
 
 namespace libesp {
 class GUI;
@@ -50,7 +51,7 @@ public:
 public:
 	static const char *LOGTAG;
 	static const int QUEUE_SIZE = 10;
-	static const int ITEM_SIZE = sizeof(MyAppMsg*);
+	static const int MSG_SIZE = sizeof(MyAppMsg*);
 	static const char *sYES;
 	static const char *sNO;
 	static const uint16_t DISPLAY_HEIGHT		= 240;
@@ -78,7 +79,7 @@ public:
 	libesp::XPT2046 &getTouch();
 	uint8_t *getBackBuffer();
 	uint32_t getBackBufferSize();
-	
+	void handleLED();	
 protected:
 	MyApp();
 	libesp::ErrorType configureLED();
@@ -88,6 +89,9 @@ private:
 	static MyApp mSelf;
 	uint32_t MyNvsHandle;
 	MyErrorMap AppErrors;
+	QueueHandle_t InternalQueueHandler;
+	uint8_t TimesToBlink;
+	int64_t TimeOfLastBlink;
 };
 
-#endif /* DC27_APP_H */
+#endif 

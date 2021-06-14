@@ -39,6 +39,9 @@ const char *MyApp::sYES = "Yes";
 const char *MyApp::sNO = "No";
 
 
+static StaticQueue_t InternalQueue;
+static uint8_t InternalQueueBuffer[MyApp::QUEUE_SIZE*MyApp::MSG_SIZE] = {0};
+
 #define START_ROT libesp::DisplayILI9341::LANDSCAPE_TOP_LEFT
 static const uint16_t PARALLEL_LINES = 1;
 
@@ -77,8 +80,10 @@ uint32_t MyApp::getBackBufferSize() {
 }
 
 
-MyApp::MyApp() : MyNvsHandle(0), AppErrors()  {
+MyApp::MyApp() : MyNvsHandle(0), AppErrors(), InternalQueueHandler(0), 
+		  TimesToBlink(0), TimeOfLastBlink(0)  {
 	ErrorType::setAppDetail(&AppErrors);
+	InternalQueueHandler = xQueueCreateStatic(QUEUE_SIZE,MSG_SIZE,&InternalQueueBuffer[0],&InternalQueue);
 }
 
 MyApp::~MyApp() {
@@ -205,11 +210,31 @@ libesp::GUI &MyApp::getGUI() {
 	return MyGui;
 }
 
+void MyApp::handleLED() {
+	NumberPressed *pe = nullptr;
+	if(xQueueReceive(InternalQueueHandler, &pe, 0)) {
+		ESP_LOGI(LOGTAG,"handleLED Message");
+		TimesToBlink = pe->Number;
+		delete pe;
+	}
+}
+
 ErrorType MyApp::onRun() {
 #if 0
 		  return ErrorType();
 #else
 	TouchTask.broadcast();
+	handleLED();
+	int64_t now = esp_timer_get_time()/1000;
+	if(TimesToBlink>0 && TimeOfLastBlink<=now) {
+		TimeOfLastBlink = now + CONFIG_BLINK_PERIOD;
+		int value = gpio_get_level(BLINK_GPIO);
+		if(value>0) {
+			gpio_set_level(BLINK_GPIO,0);
+		} else {
+			gpio_set_level(BLINK_GPIO,1);
+		}
+	}
 	libesp::BaseMenu::ReturnStateContext rsc = getCurrentMenu()->run();
 	Display.swap();
 
