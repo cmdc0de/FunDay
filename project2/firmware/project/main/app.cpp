@@ -234,6 +234,7 @@ ErrorType MyApp::onRun() {
 		} else {
 			gpio_set_level(BLINK_GPIO,1);
 		}
+		--TimesToBlink;
 	}
 	libesp::BaseMenu::ReturnStateContext rsc = getCurrentMenu()->run();
 	Display.swap();
