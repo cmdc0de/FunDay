@@ -12,6 +12,7 @@ public:
 	static const char *LOGTAG;
 	NumberMenu();
 	virtual ~NumberMenu();
+	void setAppHandle(QueueHandle_t t);
 protected:
 	virtual libesp::ErrorType onInit();
 	virtual libesp::BaseMenu::ReturnStateContext onRun();
@@ -19,6 +20,7 @@ protected:
 private:
 	QueueHandle_t InternalQueueHandler;
 	libesp::StaticGridLayout MyLayout;
+	QueueHandle_t AppHandle;
 };
 
 

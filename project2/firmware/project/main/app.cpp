@@ -81,7 +81,7 @@ uint32_t MyApp::getBackBufferSize() {
 
 
 MyApp::MyApp() : MyNvsHandle(0), AppErrors(), InternalQueueHandler(0), 
-		  TimesToBlink(0), TimeOfLastBlink(0)  {
+		  TimesToBlink(5), TimeOfLastBlink(0)  {
 	ErrorType::setAppDetail(&AppErrors);
 	InternalQueueHandler = xQueueCreateStatic(QUEUE_SIZE,MSG_SIZE,&InternalQueueBuffer[0],&InternalQueue);
 }
@@ -184,6 +184,9 @@ libesp::ErrorType MyApp::onInit() {
 	} else {
 		setCurrentMenu(getMenuState());
 	}
+
+	getNumberMenu()->setAppHandle(InternalQueueHandler);
+
 	return et;
 }
 
@@ -226,15 +229,15 @@ ErrorType MyApp::onRun() {
 	TouchTask.broadcast();
 	handleLED();
 	int64_t now = esp_timer_get_time()/1000;
+	//ESP_LOGI(LOGTAG,"now = %lld: Times to blinkd: %d, TimeOfLastBlink: %lld",now, int(TimesToBlink), TimeOfLastBlink);
 	if(TimesToBlink>0 && TimeOfLastBlink<=now) {
+		static bool LEDOn = false;
 		TimeOfLastBlink = now + CONFIG_BLINK_PERIOD;
-		int value = gpio_get_level(BLINK_GPIO);
-		if(value>0) {
-			gpio_set_level(BLINK_GPIO,0);
-		} else {
-			gpio_set_level(BLINK_GPIO,1);
-		}
-		--TimesToBlink;
+		LEDOn = !LEDOn;
+		gpio_set_level(BLINK_GPIO,(LEDOn?1:0));
+		if(!LEDOn) --TimesToBlink;
+	} else if (TimeOfLastBlink<now) {
+		gpio_set_level(BLINK_GPIO,0);
 	}
 	libesp::BaseMenu::ReturnStateContext rsc = getCurrentMenu()->run();
 	Display.swap();

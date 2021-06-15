@@ -40,7 +40,7 @@ static libesp::Widget *InterfaceElements[] = {
 static const int8_t NUM_INTERFACE_ITEMS = sizeof(InterfaceElements)/sizeof(InterfaceElements[0]);
 
 NumberMenu::NumberMenu() :
-	AppBaseMenu(), MyLayout(&InterfaceElements[0],NUM_INTERFACE_ITEMS, MyApp::get().getLastCanvasWidthPixel(), MyApp::get().getLastCanvasHeightPixel(), false) {
+	AppBaseMenu(), MyLayout(&InterfaceElements[0],NUM_INTERFACE_ITEMS, MyApp::get().getLastCanvasWidthPixel(), MyApp::get().getLastCanvasHeightPixel(), false), AppHandle(0) {
 	
 	InternalQueueHandler = xQueueCreateStatic(QUEUE_SIZE,MSG_SIZE,&InternalQueueBuffer[0],&InternalQueue);
 	MyLayout.reset();
@@ -48,6 +48,10 @@ NumberMenu::NumberMenu() :
 
 NumberMenu::~NumberMenu() {
 
+}
+
+void NumberMenu::setAppHandle(QueueHandle_t t) {
+	AppHandle = t;
 }
 
 ErrorType NumberMenu::onInit() {
@@ -82,12 +86,14 @@ libesp::BaseMenu::ReturnStateContext NumberMenu::onRun() {
 		delete pe;
 		widgetHit = MyLayout.pick(TouchPosInBuf);
 	}
+	MyApp::NumberPressed *Msg = nullptr;
 	if(widgetHit) {
 		ESP_LOGI(LOGTAG, "Widget %s hit\n", widgetHit->getName());
 		switch(widgetHit->getWidgetID()) {
 		case 0:
 			if(penUp) {
 				OneButton.setSelected(false);
+				Msg = new MyApp::NumberPressed(1);
 			} else {
 				OneButton.setSelected(true);
 			}
@@ -95,6 +101,7 @@ libesp::BaseMenu::ReturnStateContext NumberMenu::onRun() {
 		case 1:
 			if(penUp) {
 				TwoButton.setSelected(false);
+				Msg = new MyApp::NumberPressed(2);
 			} else {
 				TwoButton.setSelected(true);
 			}
@@ -102,6 +109,7 @@ libesp::BaseMenu::ReturnStateContext NumberMenu::onRun() {
 		case 2:
 			if(penUp) {
 				ThreeButton.setSelected(false);
+				Msg = new MyApp::NumberPressed(3);
 			} else {
         ThreeButton.setSelected(true);
       }
@@ -109,6 +117,7 @@ libesp::BaseMenu::ReturnStateContext NumberMenu::onRun() {
 		case 3:
 			if(penUp) {
 				FourButton.setSelected(false);
+				Msg = new MyApp::NumberPressed(4);
 			} else {
 				FourButton.setSelected(true);
       }
@@ -124,6 +133,11 @@ libesp::BaseMenu::ReturnStateContext NumberMenu::onRun() {
 	}
 	MyLayout.draw(&MyApp::get().getDisplay());
 
+	if(nullptr!=Msg) {
+		if(errQUEUE_FULL==xQueueSend(AppHandle, &Msg, 0)) {
+			delete Msg;
+		}
+	}
 	return BaseMenu::ReturnStateContext(nextState);
 }
 
